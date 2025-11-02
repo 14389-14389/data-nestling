@@ -52,14 +52,14 @@ export const FileCard = ({ file, viewMode }: FileCardProps) => {
 
   if (viewMode === "list") {
     return (
-      <div className="group flex items-center gap-4 p-4 rounded-lg border bg-card hover:shadow-medium transition-all animate-fade-in">
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", fileBgColors[file.type])}>
+      <div className="group flex items-center gap-4 p-4 rounded-xl border bg-card hover:shadow-large hover:border-primary/20 transition-all duration-300 animate-fade-in hover:-translate-y-0.5">
+        <div className={cn("flex h-11 w-11 items-center justify-center rounded-xl shadow-soft group-hover:scale-110 transition-transform duration-300", fileBgColors[file.type])}>
           <Icon className={cn("h-5 w-5", fileColors[file.type])} />
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-sm text-foreground truncate">{file.name}</h3>
-          <p className="text-xs text-muted-foreground">{file.size}</p>
+          <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors">{file.name}</h3>
+          <p className="text-xs text-muted-foreground font-medium">{file.size}</p>
         </div>
 
         <div className="flex items-center gap-4">
@@ -97,18 +97,19 @@ export const FileCard = ({ file, viewMode }: FileCardProps) => {
   }
 
   return (
-    <div className="group relative rounded-lg border bg-card p-6 hover:shadow-medium transition-all animate-fade-in cursor-pointer">
-      <div className="flex flex-col items-center gap-4">
-        <div className={cn("flex h-16 w-16 items-center justify-center rounded-xl", fileBgColors[file.type])}>
+    <div className="group relative rounded-xl border bg-card p-6 hover:shadow-large hover:border-primary/30 transition-all duration-300 animate-scale-up cursor-pointer hover:-translate-y-1 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-hero opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative flex flex-col items-center gap-4">
+        <div className={cn("flex h-16 w-16 items-center justify-center rounded-xl shadow-soft group-hover:shadow-medium group-hover:scale-110 transition-all duration-300", fileBgColors[file.type])}>
           <Icon className={cn("h-8 w-8", fileColors[file.type])} />
         </div>
 
         <div className="text-center w-full">
-          <h3 className="font-medium text-sm text-foreground truncate">{file.name}</h3>
-          <div className="flex items-center justify-center gap-2 mt-1">
-            <p className="text-xs text-muted-foreground">{file.size}</p>
-            <span className="text-muted-foreground">•</span>
-            <p className="text-xs text-muted-foreground">{file.date}</p>
+          <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors">{file.name}</h3>
+          <div className="flex items-center justify-center gap-2 mt-1.5">
+            <p className="text-xs text-muted-foreground font-medium">{file.size}</p>
+            <span className="text-muted-foreground/50">•</span>
+            <p className="text-xs text-muted-foreground font-medium">{file.date}</p>
           </div>
         </div>
       </div>

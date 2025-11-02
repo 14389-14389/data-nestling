@@ -11,10 +11,10 @@ interface HeaderProps {
 
 export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange }: HeaderProps) => {
   return (
-    <header className="border-b bg-card shadow-soft">
+    <header className="border-b bg-card shadow-medium backdrop-blur-xl bg-card/80 sticky top-0 z-50">
       <div className="flex h-16 items-center gap-4 px-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-primary shadow-medium group-hover:shadow-glow transition-all duration-300 group-hover:scale-110">
             <svg
               className="h-6 w-6 text-primary-foreground"
               fill="none"
@@ -24,24 +24,24 @@ export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">FileVault</h1>
-            <p className="text-xs text-muted-foreground">Document Manager</p>
+            <h1 className="text-xl font-bold text-foreground tracking-tight">FileVault</h1>
+            <p className="text-xs text-muted-foreground font-medium">Document Manager</p>
           </div>
         </div>
 
         <div className="flex flex-1 items-center gap-4 ml-8">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <div className="relative flex-1 max-w-md group">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
             <Input
               type="search"
               placeholder="Search files..."
-              className="pl-9 bg-secondary border-border"
+              className="pl-9 bg-secondary border-border focus:border-primary/50 focus:shadow-soft transition-all"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
             />
@@ -49,12 +49,12 @@ export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 border rounded-lg p-1 bg-secondary">
+          <div className="flex items-center gap-1 border rounded-lg p-1 bg-secondary/50 backdrop-blur-sm">
             <Button
               size="sm"
               variant={viewMode === "grid" ? "default" : "ghost"}
               onClick={() => onViewModeChange("grid")}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 transition-all"
             >
               <Grid3x3 className="h-4 w-4" />
             </Button>
@@ -62,21 +62,22 @@ export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange
               size="sm"
               variant={viewMode === "list" ? "default" : "ghost"}
               onClick={() => onViewModeChange("list")}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 transition-all"
             >
               <List className="h-4 w-4" />
             </Button>
           </div>
 
-          <Button size="icon" variant="ghost">
+          <Button size="icon" variant="ghost" className="hover:bg-secondary/80 transition-all relative">
             <Bell className="h-5 w-5" />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-destructive rounded-full animate-pulse" />
           </Button>
 
-          <Button size="icon" variant="ghost">
+          <Button size="icon" variant="ghost" className="hover:bg-secondary/80 transition-all">
             <Settings className="h-5 w-5" />
           </Button>
 
-          <Button className="gap-2 bg-gradient-primary hover:opacity-90">
+          <Button className="gap-2 bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105 font-semibold">
             <Upload className="h-4 w-4" />
             Upload
           </Button>

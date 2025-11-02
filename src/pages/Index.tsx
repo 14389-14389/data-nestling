@@ -57,7 +57,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen w-full flex-col bg-background">
+    <div className="flex h-screen w-full flex-col bg-gradient-hero">
       <Header
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -69,21 +69,21 @@ const Index = () => {
         <Sidebar selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
+          <div className="p-6 space-y-6 animate-fade-in">
+            <div className="flex items-center justify-between animate-slide-in">
               <div>
-                <h2 className="text-2xl font-bold text-foreground">{categoryNames[selectedCategory]}</h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {filteredFiles.length} {filteredFiles.length === 1 ? "file" : "files"}
+                <h2 className="text-3xl font-bold text-foreground tracking-tight">{categoryNames[selectedCategory]}</h2>
+                <p className="text-sm text-muted-foreground mt-1.5 font-medium">
+                  {filteredFiles.length} {filteredFiles.length === 1 ? "file" : "files"} found
                 </p>
               </div>
             </div>
 
             {filteredFiles.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary mb-4">
+              <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+                <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-hero border shadow-soft mb-6 animate-float">
                   <svg
-                    className="h-10 w-10 text-muted-foreground"
+                    className="h-12 w-12 text-primary"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -91,13 +91,13 @@ const Index = () => {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={1.5}
+                      strokeWidth={2}
                       d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">No files found</h3>
-                <p className="text-sm text-muted-foreground max-w-md">
+                <h3 className="text-xl font-bold text-foreground mb-2">No files found</h3>
+                <p className="text-sm text-muted-foreground max-w-md font-medium">
                   {searchQuery
                     ? "Try adjusting your search or filters"
                     : "Upload your first file to get started"}
