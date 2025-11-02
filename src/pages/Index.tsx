@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { FileCard, type FileItem } from "@/components/FileCard";
+import { WelcomeGuide } from "@/components/WelcomeGuide";
+import { UploadZone } from "@/components/UploadZone";
 
 const sampleFiles: FileItem[] = [
   { id: "1", name: "Project Proposal.pdf", type: "document", size: "2.4 MB", date: "Today", starred: true },
@@ -22,6 +24,20 @@ const Index = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem("fileVaultWelcomeSeen");
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+    }
+  }, []);
+
+  const handleCloseWelcome = () => {
+    setShowWelcome(false);
+    localStorage.setItem("fileVaultWelcomeSeen", "true");
+  };
 
   const filteredFiles = sampleFiles.filter((file) => {
     const matchesSearch = file.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,11 +74,16 @@ const Index = () => {
 
   return (
     <div className="flex h-screen w-full flex-col bg-gradient-hero">
+      {showWelcome && <WelcomeGuide onClose={handleCloseWelcome} />}
+      {showUpload && <UploadZone onClose={() => setShowUpload(false)} />}
+      
       <Header
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        onUploadClick={() => setShowUpload(true)}
+        onHelpClick={() => setShowWelcome(true)}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -97,11 +118,19 @@ const Index = () => {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">No files found</h3>
-                <p className="text-sm text-muted-foreground max-w-md font-medium">
+                <p className="text-sm text-muted-foreground max-w-md font-medium mb-4">
                   {searchQuery
                     ? "Try adjusting your search or filters"
-                    : "Upload your first file to get started"}
+                    : "Click the Upload button above to add your first file"}
                 </p>
+                {!searchQuery && (
+                  <button
+                    onClick={() => setShowUpload(true)}
+                    className="text-sm text-primary hover:underline font-semibold"
+                  >
+                    Upload Files Now →
+                  </button>
+                )}
               </div>
             ) : (
               <div

@@ -10,8 +10,15 @@ import {
   Clock,
   Trash2,
   ChevronRight,
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Category {
   id: string;
@@ -43,12 +50,23 @@ interface SidebarProps {
 
 export const Sidebar = ({ selectedCategory, onCategoryChange }: SidebarProps) => {
   return (
-    <aside className="w-64 border-r bg-card/50 backdrop-blur-xl shadow-medium flex flex-col">
-      <div className="p-4 space-y-6 flex-1 overflow-y-auto scrollbar-thin">
+    <TooltipProvider>
+      <aside className="w-64 border-r bg-card/50 backdrop-blur-xl shadow-medium flex flex-col">
+        <div className="p-4 space-y-6 flex-1 overflow-y-auto scrollbar-thin">
         <div className="space-y-1">
-          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-3">
-            Categories
-          </h2>
+          <div className="flex items-center justify-between px-3 mb-3">
+            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Categories
+            </h2>
+            <Tooltip>
+              <TooltipTrigger>
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Click to filter files by type</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           {categories.map((category) => {
             const Icon = category.icon;
             const isActive = selectedCategory === category.id;
@@ -84,9 +102,19 @@ export const Sidebar = ({ selectedCategory, onCategoryChange }: SidebarProps) =>
         </div>
 
         <div className="space-y-1 pt-4 border-t">
-          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-3">
-            Quick Access
-          </h2>
+          <div className="flex items-center justify-between px-3 mb-3">
+            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Quick Access
+            </h2>
+            <Tooltip>
+              <TooltipTrigger>
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Quick links to special folders</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           {quickAccess.map((item) => {
             const Icon = item.icon;
             const isActive = selectedCategory === item.id;
@@ -120,9 +148,9 @@ export const Sidebar = ({ selectedCategory, onCategoryChange }: SidebarProps) =>
             );
           })}
         </div>
-      </div>
+        </div>
 
-      <div className="p-4 border-t bg-gradient-hero backdrop-blur-xl">
+        <div className="p-4 border-t bg-gradient-hero backdrop-blur-xl">
         <div className="space-y-3 p-3 rounded-lg bg-card/50 border shadow-soft">
           <div className="flex justify-between text-xs text-muted-foreground">
             <span className="font-medium">Storage used</span>
@@ -135,7 +163,8 @@ export const Sidebar = ({ selectedCategory, onCategoryChange }: SidebarProps) =>
           </div>
           <p className="text-[10px] text-muted-foreground text-center">57.2 GB remaining</p>
         </div>
-      </div>
-    </aside>
+        </div>
+      </aside>
+    </TooltipProvider>
   );
 };

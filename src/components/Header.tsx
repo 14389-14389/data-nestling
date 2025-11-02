@@ -1,17 +1,26 @@
-import { Search, Upload, Grid3x3, List, Bell, Settings } from "lucide-react";
+import { Search, Upload, Grid3x3, List, Bell, Settings, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface HeaderProps {
   viewMode: "grid" | "list";
   onViewModeChange: (mode: "grid" | "list") => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onUploadClick: () => void;
+  onHelpClick: () => void;
 }
 
-export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange }: HeaderProps) => {
+export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange, onUploadClick, onHelpClick }: HeaderProps) => {
   return (
-    <header className="border-b bg-card shadow-medium backdrop-blur-xl bg-card/80 sticky top-0 z-50">
+    <TooltipProvider>
+      <header className="border-b bg-card shadow-medium backdrop-blur-xl bg-card/80 sticky top-0 z-50">
       <div className="flex h-16 items-center gap-4 px-6">
         <div className="flex items-center gap-3 group cursor-pointer">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-primary shadow-medium group-hover:shadow-glow transition-all duration-300 group-hover:scale-110">
@@ -49,40 +58,80 @@ export const Header = ({ viewMode, onViewModeChange, searchQuery, onSearchChange
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 border rounded-lg p-1 bg-secondary/50 backdrop-blur-sm">
-            <Button
-              size="sm"
-              variant={viewMode === "grid" ? "default" : "ghost"}
-              onClick={() => onViewModeChange("grid")}
-              className="h-8 w-8 p-0 transition-all"
-            >
-              <Grid3x3 className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === "list" ? "default" : "ghost"}
-              onClick={() => onViewModeChange("list")}
-              className="h-8 w-8 p-0 transition-all"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-1 border rounded-lg p-1 bg-secondary/50 backdrop-blur-sm">
+                <Button
+                  size="sm"
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  onClick={() => onViewModeChange("grid")}
+                  className="h-8 w-8 p-0 transition-all"
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  onClick={() => onViewModeChange("list")}
+                  className="h-8 w-8 p-0 transition-all"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Switch between grid and list view</p>
+            </TooltipContent>
+          </Tooltip>
 
-          <Button size="icon" variant="ghost" className="hover:bg-secondary/80 transition-all relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-destructive rounded-full animate-pulse" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon" variant="ghost" className="hover:bg-secondary/80 transition-all relative">
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-destructive rounded-full animate-pulse" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Notifications</p>
+            </TooltipContent>
+          </Tooltip>
 
-          <Button size="icon" variant="ghost" className="hover:bg-secondary/80 transition-all">
-            <Settings className="h-5 w-5" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon" variant="ghost" className="hover:bg-secondary/80 transition-all">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Settings</p>
+            </TooltipContent>
+          </Tooltip>
 
-          <Button className="gap-2 bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105 font-semibold">
-            <Upload className="h-4 w-4" />
-            Upload
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon" variant="ghost" onClick={onHelpClick} className="hover:bg-secondary/80 transition-all">
+                <HelpCircle className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Help & Guide</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={onUploadClick} className="gap-2 bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105 font-semibold">
+                <Upload className="h-4 w-4" />
+                Upload
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Upload new files</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </header>
+    </TooltipProvider>
   );
 };
