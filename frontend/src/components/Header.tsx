@@ -1,4 +1,4 @@
-import { Search, Upload, Grid3x3, List, Bell, Settings, HelpCircle } from "lucide-react";
+import { Search, Upload, Grid3x3, List, Bell, Settings, HelpCircle, Download, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,6 +7,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState, useEffect } from "react";
+import { showInstallPrompt, isPWAInstallable } from "@/utils/pwa";
 
 interface HeaderProps {
   viewMode: "grid" | "list";
@@ -15,6 +17,7 @@ interface HeaderProps {
   onSearchChange: (query: string) => void;
   onUploadClick: () => void;
   onHelpClick: () => void;
+  onLogout: () => void; // Add this line
 }
 
 export const Header = ({ 
@@ -23,8 +26,46 @@ export const Header = ({
   searchQuery, 
   onSearchChange, 
   onUploadClick, 
-  onHelpClick 
+  onHelpClick,
+  onLogout // Add this line
 }: HeaderProps) => {
+  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [isPWA, setIsPWA] = useState(false);
+
+  useEffect(() => {
+    // Check if PWA is already installed
+    setIsPWA(isPWAInstallable());
+
+    // Check if install prompt is available
+    const checkInstallPrompt = () => {
+      const deferredPrompt = (window as any).deferredPrompt;
+      setShowInstallButton(!!deferredPrompt && !isPWAInstallable());
+    };
+
+    // Listen for beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', checkInstallPrompt);
+    window.addEventListener('appinstalled', () => {
+      setIsPWA(true);
+      setShowInstallButton(false);
+    });
+
+    // Initial check
+    checkInstallPrompt();
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', checkInstallPrompt);
+      window.removeEventListener('appinstalled', () => {});
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    try {
+      await showInstallPrompt();
+    } catch (error) {
+      console.log('Install prompt failed:', error);
+    }
+  };
+
   return (
     <TooltipProvider>
       <header className="border-b bg-card shadow-medium backdrop-blur-xl bg-card/80 sticky top-0 z-50">
@@ -46,8 +87,8 @@ export const Header = ({
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground tracking-tight">FileVault</h1>
-              <p className="text-xs text-muted-foreground font-medium">Document Manager</p>
+              <h1 className="text-xl font-bold text-foreground tracking-tight"><i><b>FileVault</b></i></h1>
+              <p className="text-xs text-muted-foreground font-medium"><i><b>Document Manager</b></i></p>
             </div>
           </div>
 
@@ -65,6 +106,40 @@ export const Header = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {/* PWA Install Button - Only show when available and not already installed */}
+            {showInstallButton && !isPWA && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    onClick={handleInstallApp}
+                    variant="outline" 
+                    size="sm"
+                    className="gap-2 text-xs bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300 hover:shadow-glow transition-all duration-300"
+                  >
+                    <Download className="h-3 w-3" />
+                    Install App
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Install FileVault as a native app</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {/* PWA Installed Indicator - Subtle badge */}
+            {isPWA && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="px-2 py-1 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 text-xs rounded-full border border-green-200 font-medium shadow-sm">
+                    📱 App
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Running as installed app</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1 border rounded-lg p-1 bg-secondary/50 backdrop-blur-sm">
@@ -111,6 +186,23 @@ export const Header = ({
               </TooltipTrigger>
               <TooltipContent>
                 <p>Settings</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Logout Button - Add this */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  size="icon" 
+                  variant="ghost" 
+                  onClick={onLogout}
+                  className="hover:bg-secondary/80 transition-all hover:text-destructive"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Logout</p>
               </TooltipContent>
             </Tooltip>
 

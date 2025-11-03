@@ -4,12 +4,17 @@ import { Sidebar } from "@/components/Sidebar";
 import { FileCard } from "@/components/FileCard";
 import { UploadZone } from "@/components/UploadZone";
 import { WelcomeGuide } from "@/components/WelcomeGuide";
+import { LoginForm } from "@/components/LoginForm"; // Add this import
+import { ProtectedRoute } from "@/components/ProtectedRoute"; // Add this import
 import { useToast } from "@/hooks/use-toast";
 import { getFiles, deleteFile, downloadFile, toggleStar, testConnection } from "@/services/api";
 import { UploadedFile } from "@/services/types";
 import { Button } from "@/components/ui/button";
+import { initializePWA, isPWAInstallable } from "@/utils/pwa";
+import { useAuth } from "@/hooks/use-auth"; // Add this import
 
-function App() {
+// Move your main app logic to a separate component
+function Dashboard() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
@@ -18,7 +23,9 @@ function App() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'error'>('checking');
+  const [isPWA, setIsPWA] = useState(false);
   const { toast } = useToast();
+  const { logout } = useAuth(); // Add logout function
 
   // Calculate file statistics based on actual files
   const calculateFileStats = () => {
@@ -263,6 +270,11 @@ function App() {
           <p className="text-muted-foreground font-medium">
             {backendStatus === 'checking' ? 'Checking server connection...' : 'Loading files...'}
           </p>
+          {isPWA && (
+            <p className="text-xs text-green-600 font-medium">
+              📱 Running as PWA
+            </p>
+          )}
         </div>
       </div>
     );
@@ -300,6 +312,11 @@ function App() {
           >
             Retry Connection
           </Button>
+          {isPWA && (
+            <p className="text-xs text-green-600 font-medium">
+              📱 Running as PWA - Files will be cached for offline access
+            </p>
+          )}
         </div>
       </div>
     );
@@ -307,6 +324,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Optional: Show PWA indicator in header */}
+      {isPWA && (
+        <div className="bg-green-50 border-b border-green-200 py-1 px-4 text-center">
+          <p className="text-xs text-green-700 font-medium">
+            📱 Running as Installed App
+          </p>
+        </div>
+      )}
+      
       <Header
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -314,6 +340,8 @@ function App() {
         onSearchChange={setSearchQuery}
         onUploadClick={() => setShowUploadZone(true)}
         onHelpClick={() => setShowWelcomeGuide(true)}
+        onLogout={logout} // Add logout handler
+        isPWA={isPWA}
       />
 
       <div className="flex">
@@ -397,6 +425,20 @@ function App() {
         <WelcomeGuide onClose={() => setShowWelcomeGuide(false)} />
       )}
     </div>
+  );
+}
+
+// Main App component with authentication
+function App() {
+  // Initialize PWA
+  useEffect(() => {
+    initializePWA();
+  }, []);
+
+  return (
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
   );
 }
 
