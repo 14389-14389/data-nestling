@@ -1,10 +1,11 @@
 ﻿import { UploadedFile } from './types';
 
-const API_BASE_URL = 'http://localhost:8000';
+// Use environment variable or fallback to localhost
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // Enhanced request handler with better error handling
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${API_BASE}${endpoint}`;
   
   try {
     const response = await fetch(url, {
@@ -54,7 +55,7 @@ export const uploadFile = async (file: File): Promise<{ success: boolean; file?:
   formData.append('file', file);
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/upload`, {
+    const response = await fetch(`${API_BASE}/api/upload`, {
       method: 'POST',
       body: formData,
     });
@@ -72,9 +73,9 @@ export const uploadFile = async (file: File): Promise<{ success: boolean; file?:
 };
 
 // Download file
-export const downloadFile = async (filename: string, originalName: string): Promise<void> => {
+export const downloadFile = async (fileId: string, originalName: string): Promise<void> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/files/${filename}/download`);
+    const response = await fetch(`${API_BASE}/api/files/${fileId}/download`);
     
     if (!response.ok) {
       throw new Error(`Download failed: ${response.status}`);
