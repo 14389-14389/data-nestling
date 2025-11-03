@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, createContext, useContext } from 'react';
+﻿import React, { useState, useEffect, createContext, useContext } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -9,7 +9,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Set your master password here - CHANGE THIS TO YOUR DESIRED PASSWORD!
+// Set your master password here
 const MASTER_PASSWORD = '10420311';
 
 export const useAuth = () => {
